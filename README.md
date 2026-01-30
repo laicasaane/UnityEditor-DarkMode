@@ -26,25 +26,10 @@ A fully working runtime dark mode mod for Unity Editor on Windows with:
 - Open Package Manager in Unity Editor and click on the `+` button on the top left corner.
 - Select `Add package from git URL...` and paste below URL:
     ```
-    https://github.com/laicasaane/UnityEditor-DarkMode.git#upm?path=/upm-package
+    https://github.com/laicasaane/UnityEditor-DarkMode.git?path=/upm-package#1.0.0
     ```
 - Click on the `Add` button and you are done!
     > **WARNING:** If you feel uncomfortable downloading a malicious Package from a stranger like me, then you should not \:) Take a look at later sections to see how it works and how to build it yourself if you prefer. Please do your own homework and make your own judgement. I offer this approach as a convenience only.
-
-## Manual installation guide
-- Download the `UnityEditorDarkMode.dll` from [releases](https://github.com/0x7c13/UnityEditor-DarkMode/releases)
-
-  > **WARNING:** If you feel uncomfortable downloading a malicious DLL from a stranger like me, then you should not \:) Take a look at later sections to see how it works and how to build it yourself if you prefer. Please do your own homework and make your own judgement. I offer this approach as a convenience for those who don't want to build a C++ project themselves.
-- Copy the DLL into your Unity project and apply below settings to the DLL in the Unity Editor inspector:
-
-    ![dll-setting](screenshot-dll-setting.png?raw=true)
-
-  - Make sure `Load on startup` is checked which will make the DLL to be loaded on Unity Editor startup.
-  - Make sure `OS` is set to `Windows` which will make the DLL to be loaded only on Windows OS.
-  - Make sure only `Editor` is checked which will make the DLL to be loaded only in the Unity Editor.
-
-- Restart Unity Editor and you are done!
-- Now enjoy the immersive dark mode in Unity Editor!
 
 ## What if you don't want to add the DLL to your project?
 There are few options:
