@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Text;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -10,17 +9,19 @@ namespace UnityEditorDarkMode.Tools
     internal static class UnityEditorDarkModeTools
     {
         private const string PACKAGE_NAME = "com.0x7c13.unityeditor-darkmode";
+        private const string DISABLED_PLUGINS_FOLDER = "Plugins~";
+        private const string ENABLED_PLUGINS_FOLDER = "com.0x7c13.unityeditor-darkmode";
         private const string MENU_ROOT = "Dark Mode";
-        private const string ENABLE_MENU = MENU_ROOT + "/Enable";
-        private const string DISABLE_MENU = MENU_ROOT + "/Disable";
+        private const string ENABLE_MENU = MENU_ROOT + "/Import To Enable";
+        private const string DISABLE_MENU = MENU_ROOT + "/Delete To Disable";
 
-        [MenuItem(ENABLE_MENU)]
+        [MenuItem(ENABLE_MENU, priority = 0)]
         private static void EnableDarkMode()
         {
             SetEnable(true);
         }
 
-        [MenuItem(DISABLE_MENU)]
+        [MenuItem(DISABLE_MENU, priority = 1)]
         private static void DisableDarkMode()
         {
             SetEnable(false);
@@ -36,35 +37,59 @@ namespace UnityEditorDarkMode.Tools
                 return false;
             }
 
-            var disabledFolder = Path.Combine(packageRootPath, "Plugins~");
+            var disabledFolder = Path.Combine(packageRootPath, DISABLED_PLUGINS_FOLDER);
             return Directory.Exists(disabledFolder);
         }
 
         [MenuItem(DISABLE_MENU, true)]
         private static bool ValidateDisableDarkMode()
         {
-            var packageRootPath = GetPackageRootPath();
+            var projectPackagesPath = GetProjectPackagesPath();
 
-            if (string.IsNullOrEmpty(packageRootPath))
+            if (string.IsNullOrEmpty(projectPackagesPath))
             {
                 return false;
             }
 
-            var enabledFolder = Path.Combine(packageRootPath, "Plugins");
+            var enabledFolder = Path.Combine(projectPackagesPath, ENABLED_PLUGINS_FOLDER);
             return Directory.Exists(enabledFolder);
         }
 
         private static void SetEnable(bool enabled)
         {
             var packageRootPath = GetPackageRootPath();
+            var projectPackagesPath = GetProjectPackagesPath();
 
-            if (string.IsNullOrEmpty(packageRootPath))
+            if (string.IsNullOrEmpty(packageRootPath) || Directory.Exists(packageRootPath) == false)
             {
-                Debug.LogError("[Dark Mode] Could not find package root path.");
+                Debug.LogError($"[Dark Mode] Failed to locate '{DISABLED_PLUGINS_FOLDER}'");
                 return;
             }
 
-            TogglePluginsFolder(packageRootPath, enabled);
+            if (string.IsNullOrEmpty(projectPackagesPath))
+            {
+                Debug.LogError("[Dark Mode] Failed to locate 'Assets/Plugins'.");
+                return;
+            }
+
+            if (Directory.Exists(projectPackagesPath) == false)
+            {
+                if (enabled)
+                {
+                    Directory.CreateDirectory(projectPackagesPath);
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            TogglePluginsFolder(packageRootPath, projectPackagesPath, enabled);
+        }
+
+        private static string GetProjectPackagesPath()
+        {
+            return Path.Combine(Application.dataPath, "Packages").Replace('\\', '/');
         }
 
         private static string GetPackageRootPath()
@@ -101,81 +126,49 @@ namespace UnityEditorDarkMode.Tools
             return string.Empty;
         }
 
-        private static void TogglePluginsFolder(string rootPath, bool enabled)
+        private static void TogglePluginsFolder(string packageRootPath, string projectPackagesPath, bool enabled)
         {
-            var disabledFolder = Path.Combine(rootPath, "Plugins~");
-            var enabledFolder = Path.Combine(rootPath, "Plugins");
-            var enabledMetaFile = Path.Combine(rootPath, "Plugins.meta");
+            var disabledFolderPath = Path.Combine(packageRootPath, DISABLED_PLUGINS_FOLDER);
+            var enabledFolderPath = Path.Combine(projectPackagesPath, ENABLED_PLUGINS_FOLDER);
 
-            if (enabled && Directory.Exists(disabledFolder))
+            if (enabled && Directory.Exists(disabledFolderPath))
             {
-                if (Directory.Exists(enabledFolder))
+                if (Directory.Exists(enabledFolderPath))
                 {
-                    Directory.Delete(enabledFolder, true);
+                    Directory.Delete(enabledFolderPath, true);
                 }
 
-                Directory.Move(disabledFolder, enabledFolder);
-                File.WriteAllText(enabledMetaFile, GetPluginsFolderMetaContent(), Encoding.UTF8);
+                Directory.CreateDirectory(enabledFolderPath);
 
-                if (Directory.Exists(disabledFolder))
+                var disabledFolder = new DirectoryInfo(disabledFolderPath);
+
+                foreach (FileInfo srcFile in disabledFolder.GetFiles())
                 {
-                    Directory.Delete(disabledFolder, true);
+                    var destFilePath = Path.Combine(enabledFolderPath, srcFile.Name);
+                    File.Copy(srcFile.FullName, destFilePath, true);
                 }
 
-                Debug.Log("[Dark Mode] Enabled. Please restart the Unity Editor to fully enable Dark Mode support.");
-                AssetDatabase.Refresh();
+                var msg = "The plugin to enable Dark Mode has been imported into " +
+                    $"'Assets/Plugins/{ENABLED_PLUGINS_FOLDER}'\n." +
+                    $"It is safe for your version control system to ignore the folder '{ENABLED_PLUGINS_FOLDER}'.\n" +
+                    "Please restart the Unity Editor to fully enable Dark Mode support.";
 
+                Debug.LogWarning($"[Dark Mode] Enabled. {msg}");
+
+                AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+
+                EditorUtility.DisplayDialog("Dark Mode Enabled", msg, "OK");
+            }
+            else if (enabled == false && Directory.Exists(enabledFolderPath))
+            {
                 EditorUtility.DisplayDialog(
-                    "Dark Mode Enabled",
-                    "Please restart the Unity Editor to fully enable Dark Mode support.",
-                    "OK"
+                      "How to disable Dark Mode?"
+                    , $"It is NOT possible to delete the folder 'Assets/Plugins/{ENABLED_PLUGINS_FOLDER}' " +
+                      "while Unity Editor is running.\n" +
+                      "Please exit Unity Editor then delete the folder manually."
+                    , "I understand"
                 );
             }
-            else if (enabled == false && Directory.Exists(enabledFolder))
-            {
-                if (Directory.Exists(disabledFolder))
-                {
-                    Directory.Delete(disabledFolder, true);
-                }
-
-                Directory.Move(enabledFolder, disabledFolder);
-
-                if (Directory.Exists(enabledFolder))
-                {
-                    Directory.Delete(enabledFolder, true);
-                }
-
-                if (File.Exists(enabledMetaFile))
-                {
-                    File.Delete(enabledMetaFile);
-                }
-
-                Debug.Log("[Dark Mode] Disabled. Please restart the Unity Editor to fully disable Dark Mode support.");
-                AssetDatabase.Refresh();
-
-                EditorUtility.DisplayDialog(
-                    "Dark Mode Disabled",
-                    "Please restart the Unity Editor to fully disable Dark Mode support.",
-                    "OK"
-                );
-            }
-        }
-
-        private static string GetPluginsFolderMetaContent()
-        {
-            var sb = new StringBuilder();
-
-            sb.AppendLine("fileFormatVersion: 2");
-            sb.AppendLine($"guid: {Guid.NewGuid():N}");
-            sb.AppendLine("folderAsset: yes");
-            sb.AppendLine("DefaultImporter:");
-            sb.AppendLine("  externalObjects: {}");
-            sb.AppendLine("  userData: ");
-            sb.AppendLine("  assetBundleName: ");
-            sb.AppendLine("  assetBundleVariant: ");
-            sb.AppendLine();
-
-            return sb.ToString();
         }
     }
 }
