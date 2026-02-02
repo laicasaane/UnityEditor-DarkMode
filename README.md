@@ -49,14 +49,6 @@ To disable it, first exit Unity Editor, then manually delete the folder
 
 Finally reopen Unity Editor.
 
-## How does it work?
-
-By enabling the mod, the folder `Plugins~` will be renamed to `Plugins` so that Unity Editor
-can recognize the `UnityEditorDarkMode.dll`.
-
-If the pakage exists within the `Library/PackageCache` folder, this kind of modification won't persist
-if it is updated, for example to a newer version. However, I don't expect frequent updates for this package.
-
 ## What if you don't want to add the DLL to your project?
 There are few options:
 - You could inject the DLL into the Unity Editor process yourself using your preferred approach.
