@@ -24,7 +24,7 @@ A fully working runtime dark mode mod for Unity Editor on Windows with:
 ### ⚠️ A word of caution
 
 If you feel uncomfortable downloading a malicious Package from a stranger like me,
-then you should not \:) Take a look at later sections to see how it works and how to buildit yourself if you prefer.
+then you should not \:) Take a look at later sections to see how it works and how to build it yourself if you prefer.
 
 Please do your own homework and make your own judgement. I offer this approach as aconvenience only.
 
@@ -39,6 +39,18 @@ To enable it locally, you need to use the menu item `Dark Mode > Import To Enabl
 The DLL will be imported into `Assets/Plugins/com.0x7c13.unityeditor-darkmode`.
 
 ![Menu Screenshot](imgs/screenshot-menu.png?raw=true)
+
+### Ignore the plugin folder
+
+You should want to configure your version control system (i.e. git) to ignore the folder 
+`Assets/Plugins/com.0x7c13.unityeditor-darkmode`. Otherwise it will take unwanted effect on other machines.
+
+Here is an example for `.gitignore`:
+
+```
+[Aa]ssets/[Pp]lugins/com.0x7c13.unityeditor-darkmode
+[Aa]ssets/[Pp]lugins/com.0x7c13.unityeditor-darkmode.meta
+```
 
 ### Disable Dark Mode
 
