@@ -44,21 +44,21 @@ namespace UnityEditorDarkMode.Tools
         [MenuItem(DISABLE_MENU, true)]
         private static bool ValidateDisableDarkMode()
         {
-            var projectPackagesPath = GetProjectPackagesPath();
+            var projectPluginsPath = GetProjectPluginsPath();
 
-            if (string.IsNullOrEmpty(projectPackagesPath))
+            if (string.IsNullOrEmpty(projectPluginsPath))
             {
                 return false;
             }
 
-            var enabledFolder = Path.Combine(projectPackagesPath, ENABLED_PLUGINS_FOLDER);
+            var enabledFolder = Path.Combine(projectPluginsPath, ENABLED_PLUGINS_FOLDER);
             return Directory.Exists(enabledFolder);
         }
 
         private static void SetEnable(bool enabled)
         {
             var packageRootPath = GetPackageRootPath();
-            var projectPackagesPath = GetProjectPackagesPath();
+            var projectPluginsPath = GetProjectPluginsPath();
 
             if (string.IsNullOrEmpty(packageRootPath) || Directory.Exists(packageRootPath) == false)
             {
@@ -66,17 +66,17 @@ namespace UnityEditorDarkMode.Tools
                 return;
             }
 
-            if (string.IsNullOrEmpty(projectPackagesPath))
+            if (string.IsNullOrEmpty(projectPluginsPath))
             {
                 Debug.LogError("[Dark Mode] Failed to locate 'Assets/Plugins'.");
                 return;
             }
 
-            if (Directory.Exists(projectPackagesPath) == false)
+            if (Directory.Exists(projectPluginsPath) == false)
             {
                 if (enabled)
                 {
-                    Directory.CreateDirectory(projectPackagesPath);
+                    Directory.CreateDirectory(projectPluginsPath);
                 }
                 else
                 {
@@ -84,12 +84,12 @@ namespace UnityEditorDarkMode.Tools
                 }
             }
 
-            TogglePluginsFolder(packageRootPath, projectPackagesPath, enabled);
+            TogglePluginsFolder(packageRootPath, projectPluginsPath, enabled);
         }
 
-        private static string GetProjectPackagesPath()
+        private static string GetProjectPluginsPath()
         {
-            return Path.Combine(Application.dataPath, "Packages").Replace('\\', '/');
+            return Path.Combine(Application.dataPath, "Plugins").Replace('\\', '/');
         }
 
         private static string GetPackageRootPath()
@@ -126,10 +126,10 @@ namespace UnityEditorDarkMode.Tools
             return string.Empty;
         }
 
-        private static void TogglePluginsFolder(string packageRootPath, string projectPackagesPath, bool enabled)
+        private static void TogglePluginsFolder(string packageRootPath, string projectPluginsPath, bool enabled)
         {
             var disabledFolderPath = Path.Combine(packageRootPath, DISABLED_PLUGINS_FOLDER);
-            var enabledFolderPath = Path.Combine(projectPackagesPath, ENABLED_PLUGINS_FOLDER);
+            var enabledFolderPath = Path.Combine(projectPluginsPath, ENABLED_PLUGINS_FOLDER);
 
             if (enabled && Directory.Exists(disabledFolderPath))
             {
