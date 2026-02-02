@@ -1,7 +1,7 @@
 {
   "name": "com.0x7c13.unityeditor-darkmode",
   "displayName": "UnityEditor Dark Mode",
-  "version": "6000.0.1",
+  "version": "6000.0.2",
   "unity": "6000.0",
-  "documentationUrl": "https://github.com/0x7c13/UnityEditor-DarkMode"
+  "documentationUrl": "https://github.com/laicasaane/UnityEditor-DarkMode"
 }
