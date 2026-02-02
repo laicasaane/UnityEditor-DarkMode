@@ -8,7 +8,7 @@ A fully working runtime dark mode mod for Unity Editor on Windows with:
 
 > This runtime mod works on Windows 11 and Windows 10 1903+. Tested on Unity 2019, 2020, 2021, 2022, 2023 and Unity 6.
 
-![Screenshot](screenshot.jpg?raw=true)
+![Screenshot](imgs/screenshot.jpg?raw=true)
 
 ## Easy installation guide
 
@@ -16,23 +16,38 @@ A fully working runtime dark mode mod for Unity Editor on Windows with:
 - Open Package Manager in Unity Editor and click on the `+` button on the top left corner.
 - Select `Add package from git URL...` and paste below URL:
     ```
-    https://github.com/laicasaane/UnityEditor-DarkMode.git?path=/upm-package#6000.0.1
+    https://github.com/laicasaane/UnityEditor-DarkMode.git?path=/upm-package#6000.0.2
     ```
-    > **NOTE:** For Unity 2022.3, replace the tag version `6000.0.1` with `2022.3.0`
+    > **NOTE:** For Unity 2022.3, replace the tag version `6000.0.2` with `2022.3.0`
 - Click on the `Add` button and you are done!
-    > **WARNING:** If you feel uncomfortable downloading a malicious Package from a stranger like me,
-    then you should not \:) Take a look at later sections to see how it works and how to build it yourself if you prefer.
-    Please do your own homework and make your own judgement. I offer this approach as a convenience only.
+
+### ⚠️ A word of caution
+
+If you feel uncomfortable downloading a malicious Package from a stranger like me,
+then you should not \:) Take a look at later sections to see how it works and how to buildit yourself if you prefer.
+
+Please do your own homework and make your own judgement. I offer this approach as aconvenience only.
 
 ## Usage guide
 
 Since verion `6000.0.1`, this mod won't be enabled after the package is installed or updated.
 It is intentional to avoid unwanted activation of the mod for everyone else who attempts to open the project.
 
-- To enable it locally, you need to use the menu item `Dark Mode > Enable`.
-- To disable, use `Dark Mode > Disable`.
+### Enable Dark Mode
 
-![Menu Screenshot](screenshot-menu.png?raw=true)
+To enable it locally, you need to use the menu item `Dark Mode > Import To Enable`.
+The DLL will be imported into `Assets/Plugins/com.0x7c13.unityeditor-darkmode`.
+
+![Menu Screenshot](imgs/screenshot-menu.png?raw=true)
+
+### Disable Dark Mode
+
+Because the DLL is hooked into the Unity Editor process, it cannot be deleted while the editor is running.
+
+To disable it, first exit Unity Editor, then manually delete the folder
+`Assets/Plugins/com.0x7c13.unityeditor-darkmode`.
+
+Finally reopen Unity Editor.
 
 ## How does it work?
 
@@ -110,6 +125,7 @@ Remove the DLL from your project and restart Unity Editor (You need to close the
 - The `UnityEditorDarkMode.dll` will be created under the `build\Release` directory after the build finishes successfully.
 
 ## How it works?
+
 This project is basically a stripped down version of [ReaperThemeHackDll](https://github.com/jjYBdx4IL/ReaperThemeHackDll)
 made by [jjYBdx4IL](https://github.com/jjYBdx4IL) with some minor modifications.
 If you like this project, please consider giving a star to the `ReaperThemeHackDll` project as well.
@@ -153,6 +169,17 @@ Ok, so what I have done on top of `ReaperThemeHackDll` is:
     "C:\Program Files\Unity\Hub\Editor\2022.3.22f1\Editor\Unity.exe" ^
     -projectPath "C:\<Path>\<To>\<Your>\<UnityProjectFolder>"
     ```
+
+## Manual Installation
+
+- Build the DLL from the [`src`](src/) folder.
+- Copy the DLL into your Unity project and apply below settings to the DLL in the Unity Editor inspector:
+
+    ![dll-setting](imgs/screenshot-dll-setting.png?raw=true)
+
+- Make sure `Load on startup` is checked which will make the DLL to be loaded on Unity Editor startup.
+- Make sure `OS` is set to `Windows` which will make the DLL to be loaded only on Windows OS.
+- Make sure only `Editor` is checked which will make the DLL to be loaded only in the Unity Editor.
 
 ## Known issues
 > I haven't found any major issues so far.
