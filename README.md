@@ -16,9 +16,9 @@ A fully working runtime dark mode mod for Unity Editor on Windows with:
 - Open Package Manager in Unity Editor and click on the `+` button on the top left corner.
 - Select `Add package from git URL...` and paste below URL:
     ```
-    https://github.com/laicasaane/UnityEditor-DarkMode.git?path=/upm-package#6000.0.2
+    https://github.com/laicasaane/UnityEditor-DarkMode.git?path=/upm-package#6000.0.3
     ```
-    > **NOTE:** For Unity 2022.3, replace the tag version `6000.0.2` with `2022.3.0`
+    > **NOTE:** For Unity 2022.3, replace the tag version `6000.0.3` with `2022.3.0`
 - Click on the `Add` button and you are done!
 
 ### ⚠️ A word of caution
