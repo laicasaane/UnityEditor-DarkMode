@@ -1,0 +1,17 @@
+{
+    "name": "UnityEditorDarkMode.Tools",
+    "rootNamespace": "UnityEditorDarkMode.Tools",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_EDITOR",
+        "UNITY_EDITOR_WIN"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

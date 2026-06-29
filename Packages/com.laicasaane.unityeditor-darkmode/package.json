@@ -1,0 +1,11 @@
+{
+  "name": "com.laicasaane.unityeditor-darkmode",
+  "displayName": "UnityEditor Dark Mode",
+  "author": {
+    "name": "Laicasaane"
+  },
+  "version": "6.3.0",
+  "unity": "6000.3",
+  "description": "A fully working dark mode mod for Unity Editor on Windows.",
+  "documentationUrl": "https://github.com/laicasaane/UnityEditor-DarkMode"
+}
