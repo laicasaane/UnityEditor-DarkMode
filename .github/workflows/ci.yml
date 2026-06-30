@@ -43,6 +43,12 @@ jobs:
       - name: Verify Unity UPM CLI
         run: upm --help
 
+      - name: Copy CHANGELOG, LICENSE, README into package
+        run: |
+          cp CHANGELOG.md "$PACKAGE_PATH/CHANGELOG.md"
+          cp LICENSE.md "$PACKAGE_PATH/LICENSE.md"
+          cp README.md "$PACKAGE_PATH/README.md"
+
       - name: Sign package
         run: |
           mkdir -p "$DIST_DIR"
